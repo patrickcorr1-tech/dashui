@@ -1,7 +1,7 @@
 <Window x:Class="InvoiceScanner.Rules.RulesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Rules" Height="520" Width="720" WindowStartupLocation="CenterOwner" Background="#0B0E14">
+        Title="Rules" Height="560" Width="740" WindowStartupLocation="CenterOwner" Background="#0B0E14">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -9,7 +9,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Detection Rules" FontSize="22" FontWeight="SemiBold" Foreground="#E6EDF3" />
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Left" Text="Detection Rules" FontSize="22" FontWeight="SemiBold" Foreground="#E6EDF3" />
+            <Menu DockPanel.Dock="Right" Background="Transparent" Foreground="#E6EDF3">
+                <MenuItem Header="Actions">
+                    <MenuItem Header="Load OCR (TXT/PDF)" Click="LoadOcr_Click" />
+                    <MenuItem Header="Test OCR" Click="TestOcr_Click" />
+                </MenuItem>
+            </Menu>
+        </DockPanel>
 
         <ScrollViewer Grid.Row="1" Margin="0,16,0,16">
             <StackPanel>
@@ -28,9 +36,8 @@
                 <TextBlock Text="Test OCR Text" Foreground="#9FB1C5" />
                 <TextBox x:Name="OcrInputBox" Margin="0,6,0,10" AcceptsReturn="True" Height="120" Background="#0F1522" Foreground="#D7E0EA" BorderBrush="#1E2A3B" />
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button Content="Load OCR" Width="110" Height="34" Style="{StaticResource SecondaryButton}" Click="LoadOcr_Click" />
-                    <Button Content="Test OCR" Width="110" Height="34" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}" Click="TestOcr_Click" />
-                    <TextBlock x:Name="TestResultText" Margin="12,6,0,0" Foreground="#7DD3FC" />
+                    <ProgressBar x:Name="OcrProgress" Width="180" Height="12" Minimum="0" Maximum="100" Value="0" Foreground="#4F46E5" Background="#1E2A3B" />
+                    <TextBlock x:Name="TestResultText" Margin="12,0,0,0" Foreground="#7DD3FC" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

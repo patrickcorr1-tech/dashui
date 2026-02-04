@@ -51,8 +51,10 @@ public partial class RulesWindow : Window
             if (ext == ".pdf")
             {
                 TestResultText.Text = "Running OCR...";
+                OcrProgress.Value = 0;
                 var ocr = new OcrEngine();
-                var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName);
+                var progress = new Progress<int>(p => OcrProgress.Value = p);
+                var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName, progress);
                 OcrInputBox.Text = text;
                 TestResultText.Text = "OCR loaded.";
             }
