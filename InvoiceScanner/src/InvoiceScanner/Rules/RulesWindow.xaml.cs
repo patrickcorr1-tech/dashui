@@ -10,12 +10,14 @@ namespace InvoiceScanner.Rules;
 public partial class RulesWindow : Window
 {
     private readonly string _path;
+    private System.Threading.CancellationTokenSource? _ocrCts;
 
     public RulesWindow(string path)
     {
         InitializeComponent();
         _path = path;
         LoadRules();
+        CancelOcrButton.IsEnabled = false;
     }
 
     private void LoadRules()
@@ -52,11 +54,26 @@ public partial class RulesWindow : Window
             {
                 TestResultText.Text = "Running OCR...";
                 OcrProgress.Value = 0;
-                var ocr = new OcrEngine();
-                var progress = new Progress<int>(p => OcrProgress.Value = p);
-                var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName, progress);
-                OcrInputBox.Text = text;
-                TestResultText.Text = "OCR loaded.";
+                CancelOcrButton.IsEnabled = true;
+                _ocrCts = new System.Threading.CancellationTokenSource();
+
+                try
+                {
+                    var ocr = new OcrEngine();
+                    var progress = new Progress<int>(p => OcrProgress.Value = p);
+                    var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName, progress, _ocrCts.Token);
+                    OcrInputBox.Text = text;
+                    TestResultText.Text = "OCR loaded.";
+                }
+                catch (OperationCanceledException)
+                {
+                    TestResultText.Text = "OCR canceled.";
+                }
+                finally
+                {
+                    CancelOcrButton.IsEnabled = false;
+                    _ocrCts = null;
+                }
             }
             else
             {
@@ -72,6 +89,11 @@ public partial class RulesWindow : Window
         var data = parser.Parse(OcrInputBox.Text ?? string.Empty);
 
         TestResultText.Text = $"Supplier: {data.Supplier} | Invoice: {data.InvoiceNumber} | Date: {data.Date}";
+    }
+
+    private void CancelOcr_Click(object sender, RoutedEventArgs e)
+    {
+        _ocrCts?.Cancel();
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)

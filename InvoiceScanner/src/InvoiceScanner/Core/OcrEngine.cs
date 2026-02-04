@@ -9,9 +9,12 @@ public class OcrEngine
     private readonly PdfConverter _converter = new();
 
     public Task<string> ExtractTextFromPdfAsync(string pdfPath)
-        => ExtractTextFromPdfAsync(pdfPath, null);
+        => ExtractTextFromPdfAsync(pdfPath, null, null);
 
     public Task<string> ExtractTextFromPdfAsync(string pdfPath, IProgress<int>? progress)
+        => ExtractTextFromPdfAsync(pdfPath, progress, null);
+
+    public Task<string> ExtractTextFromPdfAsync(string pdfPath, IProgress<int>? progress, System.Threading.CancellationToken? token)
     {
         return Task.Run(() =>
         {
@@ -22,6 +25,7 @@ public class OcrEngine
             var total = images.Count == 0 ? 1 : images.Count;
             for (int i = 0; i < images.Count; i++)
             {
+                token?.ThrowIfCancellationRequested();
                 var img = images[i];
                 using var pix = PixConverter.ToPix(img);
                 using var page = engine.Process(pix);
