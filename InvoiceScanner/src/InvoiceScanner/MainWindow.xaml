@@ -55,10 +55,12 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Activity Log" Foreground="#9FB1C5" />
                     <TextBox Grid.Row="1" x:Name="LogBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="#0B111D" Foreground="#D7E0EA" BorderBrush="#1E2A3B" />
+                    <TextBlock Grid.Row="2" Margin="0,10,0,0" Text="Paddy's OCR Tool" Foreground="#7DD3FC" HorizontalAlignment="Center" FontWeight="SemiBold" />
                 </Grid>
             </Border>
         </Grid>
