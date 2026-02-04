@@ -38,16 +38,28 @@ public partial class RulesWindow : Window
         };
     }
 
-    private void LoadOcr_Click(object sender, RoutedEventArgs e)
+    private async void LoadOcr_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"
+            Filter = "Text Files (*.txt)|*.txt|PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*"
         };
 
         if (dialog.ShowDialog() == true)
         {
-            OcrInputBox.Text = File.ReadAllText(dialog.FileName);
+            var ext = Path.GetExtension(dialog.FileName).ToLowerInvariant();
+            if (ext == ".pdf")
+            {
+                TestResultText.Text = "Running OCR...";
+                var ocr = new OcrEngine();
+                var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName);
+                OcrInputBox.Text = text;
+                TestResultText.Text = "OCR loaded.";
+            }
+            else
+            {
+                OcrInputBox.Text = File.ReadAllText(dialog.FileName);
+            }
         }
     }
 
