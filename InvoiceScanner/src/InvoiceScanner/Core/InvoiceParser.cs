@@ -6,10 +6,17 @@ namespace InvoiceScanner.Core;
 
 public class InvoiceParser
 {
+    private readonly Rules.RuleSet _rules;
+
+    public InvoiceParser(Rules.RuleSet rules)
+    {
+        _rules = rules;
+    }
+
     public InvoiceData Parse(string text)
     {
         var clean = TextUtils.Clean(text);
-        var invoice = RegexPatterns.InvoiceNumber.Match(clean);
+        var invoice = RegexPatterns.InvoiceNumber(_rules).Match(clean);
         var date = ExtractDate(clean);
         var supplier = GuessSupplier(clean);
 
@@ -32,18 +39,12 @@ public class InvoiceParser
         return string.Empty;
     }
 
-    private static string ExtractDate(string clean)
+    private string ExtractDate(string clean)
     {
-        var labeled = RegexPatterns.InvoiceDateLabel.Match(clean);
+        var labeled = RegexPatterns.DateLabel(_rules).Match(clean);
         if (labeled.Success)
         {
             return TextUtils.NormalizeDate(labeled.Groups[1].Value);
-        }
-
-        var due = RegexPatterns.DueDateLabel.Match(clean);
-        if (due.Success)
-        {
-            return TextUtils.NormalizeDate(due.Groups[1].Value);
         }
 
         var date = RegexPatterns.Date.Match(clean);
@@ -60,10 +61,13 @@ public class InvoiceParser
 
     private string GuessSupplier(string text)
     {
+        var ignore = RegexPatterns.IgnoreWords(_rules);
+        var suffix = RegexPatterns.CompanySuffix(_rules);
+
         var lines = text.Split('\n')
             .Select(l => l.Trim())
             .Where(l => l.Length > 3)
-            .Where(l => !RegexPatterns.IgnoreWords.IsMatch(l))
+            .Where(l => !ignore.IsMatch(l))
             .Take(12)
             .ToList();
 
@@ -74,7 +78,7 @@ public class InvoiceParser
             {
                 Line = l,
                 Upper = l.Count(char.IsUpper),
-                HasSuffix = RegexPatterns.CompanySuffix.IsMatch(l),
+                HasSuffix = suffix.IsMatch(l),
                 Length = l.Length
             })
             .OrderByDescending(c => c.HasSuffix)

@@ -1,0 +1,6 @@
+{
+  "invoiceLabels": ["Invoice No", "Invoice #", "Invoice Number", "Inv #", "Document No", "Reference", "Bill No"],
+  "dateLabels": ["Invoice Date", "Due Date", "Tax Date"],
+  "ignoreWords": ["invoice", "tax", "total", "vat", "date", "amount", "due", "paid", "balance", "account", "statement", "bank", "swift", "iban", "address"],
+  "companySuffixes": ["ltd", "limited", "llc", "inc", "co", "company", "gmbh", "plc", "pty", "sarl", "bv", "ag", "oy", "aps", "as", "kg", "kgaa", "nv"]
+}

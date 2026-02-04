@@ -22,7 +22,8 @@ public class SyncController
         _outlook = new OutlookService();
         _extractor = new AttachmentExtractor();
         _ocr = new OcrEngine();
-        _parser = new InvoiceParser();
+        var rules = Rules.RuleLoader.Load(Path.Combine(AppContext.BaseDirectory, "Rules", "rules.json"));
+        _parser = new InvoiceParser(rules);
         _renamer = new FileRenamer();
     }
 
