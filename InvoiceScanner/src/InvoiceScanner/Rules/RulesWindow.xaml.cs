@@ -71,10 +71,12 @@ public partial class RulesWindow : Window
                     var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName, progress, _ocrCts.Token);
                     OcrInputBox.Text = text;
                     TestResultText.Text = "OCR loaded.";
+                    OcrPercentText.Text = "Done";
                 }
                 catch (OperationCanceledException)
                 {
                     TestResultText.Text = "OCR canceled.";
+                    OcrPercentText.Text = "Canceled";
                 }
                 finally
                 {
