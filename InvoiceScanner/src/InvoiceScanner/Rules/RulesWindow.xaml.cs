@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using InvoiceScanner.Core;
 
 namespace InvoiceScanner.Rules;
 
@@ -25,15 +26,29 @@ public partial class RulesWindow : Window
         CompanySuffixesBox.Text = string.Join(Environment.NewLine, rules.CompanySuffixes);
     }
 
-    private void Save_Click(object sender, RoutedEventArgs e)
+    private RuleSet BuildRulesFromUi()
     {
-        var rules = new RuleSet
+        return new RuleSet
         {
             InvoiceLabels = InvoiceLabelsBox.Text.Split('\n').Select(s => s.Trim()).Where(s => s.Length > 0).ToList(),
             DateLabels = DateLabelsBox.Text.Split('\n').Select(s => s.Trim()).Where(s => s.Length > 0).ToList(),
             IgnoreWords = IgnoreWordsBox.Text.Split('\n').Select(s => s.Trim()).Where(s => s.Length > 0).ToList(),
             CompanySuffixes = CompanySuffixesBox.Text.Split('\n').Select(s => s.Trim()).Where(s => s.Length > 0).ToList()
         };
+    }
+
+    private void TestOcr_Click(object sender, RoutedEventArgs e)
+    {
+        var rules = BuildRulesFromUi();
+        var parser = new InvoiceParser(rules);
+        var data = parser.Parse(OcrInputBox.Text ?? string.Empty);
+
+        TestResultText.Text = $"Supplier: {data.Supplier} | Invoice: {data.InvoiceNumber} | Date: {data.Date}";
+    }
+
+    private void Save_Click(object sender, RoutedEventArgs e)
+    {
+        var rules = BuildRulesFromUi();
 
         var json = System.Text.Json.JsonSerializer.Serialize(rules, new System.Text.Json.JsonSerializerOptions
         {
