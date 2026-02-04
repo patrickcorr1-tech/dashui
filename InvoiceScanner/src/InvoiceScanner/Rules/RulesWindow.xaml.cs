@@ -54,6 +54,7 @@ public partial class RulesWindow : Window
             {
                 TestResultText.Text = "Running OCR...";
                 OcrProgress.Value = 0;
+                OcrPercentText.Text = "0%";
                 CancelOcrButton.IsEnabled = true;
                 Spinner.Visibility = Visibility.Visible;
                 StartSpinner();
@@ -62,7 +63,11 @@ public partial class RulesWindow : Window
                 try
                 {
                     var ocr = new OcrEngine();
-                    var progress = new Progress<int>(p => OcrProgress.Value = p);
+                    var progress = new Progress<int>(p =>
+                    {
+                        OcrProgress.Value = p;
+                        OcrPercentText.Text = $"{p}%";
+                    });
                     var text = await ocr.ExtractTextFromPdfAsync(dialog.FileName, progress, _ocrCts.Token);
                     OcrInputBox.Text = text;
                     TestResultText.Text = "OCR loaded.";
