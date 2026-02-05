@@ -10,7 +10,7 @@ public class OutlookService
     public List<MailItem> GetMessagesInFolder(string folderName)
     {
         var list = new List<MailItem>();
-        var outlook = new Application();
+        var outlook = new Microsoft.Office.Interop.Outlook.Application();
         var ns = outlook.GetNamespace("MAPI");
         var inbox = ns.GetDefaultFolder(OlDefaultFolders.olFolderInbox);
         var scanned = FindFolder(inbox, folderName);

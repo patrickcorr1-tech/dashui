@@ -1,6 +1,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Tesseract;
+using Tesseract.Drawing;
 
 namespace InvoiceScanner.Core;
 
