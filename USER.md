@@ -6,7 +6,7 @@
 - **What to call them:** Paddy
 - **Pronouns:** *(optional)*
 - **Timezone:** 
-- **Notes:** 
+- **Notes:** Prefers step-by-step support. Environment: Windows (primary) + macOS, Office 365, Mimecast, Watchguard firewall. Escalation: email logs to external help desk if unresolved.
 
 ## Context
 
